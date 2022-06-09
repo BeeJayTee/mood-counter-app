@@ -10,6 +10,7 @@
 <body>
     <main>
         <section class="totalNumSection">
+            <h2 class="currentDay"><%= currentDate %></h2>
             <% if (moodNum > 0) { %>
                 <h2 class="positiveMoodNum"><%= moodNum %></h2>
             <%} else {%>
@@ -26,6 +27,11 @@
         </section>
         <button type="submit" class="submitButton">Submit</button>
     </main>
+    <section class="datesLogged">
+        <% results.forEach(doc => {%>
+            <span><%= doc.currentDay %>: </span><span><%= doc.moodNumber %></span><br>
+        <%})%>
+    </section>
     <script src="/main.js" type="text/javascript"></script>
 </body>
 </html>

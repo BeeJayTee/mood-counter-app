@@ -28,7 +28,26 @@ MongoClient.connect(connectionString)
         app.get('/', (req, res) => {
             moodNumberCollection.find().toArray()
                 .then(results => {
-                    res.render('index.ejs', {moodNum: results[0].moodNumber})
+                    const doc = results[results.length-1]
+                    const currentDate = new Date()
+                    const currentDateString = currentDate.toDateString()
+                    if (currentDateString === doc.currentDay) {
+                        res.render('index.ejs', {moodNum: doc.moodNumber, currentDate: doc.currentDay, results: results})
+                    } else {
+                        moodNumberCollection.insertOne(
+                            {
+                                moodNumber: 0,
+                                currentDay: currentDateString
+                            }
+                        )
+                        .then(result => {
+                            moodNumberCollection.find().toArray()
+                                .then(results => {
+                                    const newDayDoc = results[results.length-1]
+                                    res.render('index.ejs', {moodNum: newDayDoc.moodNumber, currentDate: newDayDoc.currentDay, results: results})
+                                })
+                        })
+                    }
                 })
                 .catch(err => console.error(err))
         })
@@ -36,23 +55,27 @@ MongoClient.connect(connectionString)
         app.get('/mood-number', (req, res) => {
             moodNumberCollection.find().toArray()
                 .then(results => {
-                    let moodNum = res.json(results[0].moodNumber)
+                    let moodNum = res.json(results[results.length-1].moodNumber)
                 })
                 .catch(err => console.error(err))
         })
 
         app.put('/mood-number', (req, res) => {
-            console.log(req.body)
             let currentMoodNum = req.body.currentNum
-            moodNumberCollection.updateOne(
-                {_id: ObjectId('62a0eea5589d070e3c53844e')},
-                {
-                    $set: {
-                        moodNumber: currentMoodNum
-                    }
-                }
-            )
-                .then(res.json('success'))
+            const allDocs = moodNumberCollection.find().toArray()
+                .then(results => {
+                    const currentDoc = results[results.length-1]
+                    const currentDocId = currentDoc._id.toString()
+                    moodNumberCollection.updateOne(
+                        {_id: ObjectId(currentDocId)},
+                        {
+                            $set: {
+                                moodNumber: currentMoodNum
+                            }
+                        }
+                    )
+                        .then(res.json('success'))
+                })
         })
 
 
