@@ -4,34 +4,52 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Fira+Sans:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="/styles.css">
-    <title>Site Name</title>
+    <title>Mood Counter</title>
 </head>
 <body>
-    <main>
-        <section class="totalNumSection">
-            <h2 class="currentDay"><%= currentDate %></h2>
-            <% if (moodNum > 0) { %>
-                <h2 class="positiveMoodNum"><%= moodNum %></h2>
-            <%} else {%>
-                <h2 class="negativeMoodNum"><%= moodNum %></h2>
-            <%}%>
+    <h1 class="title">Welcome to the Mood App. Please tell us how you are feeling today.</h1>
+    <div class="content">
+        <main>
+            <section class="totalNumSection">
+                <h2 class="currentDay"><%= currentDate %></h2>
+                <% if (moodNum > 0) { %>
+                    <h2 class="positiveMoodNum"><%= moodNum %></h2>
+                <%} else {%>
+                    <h2 class="negativeMoodNum"><%= moodNum %></h2>
+                <%}%>
+            </section>
+            <section class="titleSection">
+                <h5 class="subTitle">How is your mood today?</h5>
+            </section>
+            <section class="buttonSection">
+                <span href="" class="moodButton good">Feeling Good</span>
+                <span href="" class="moodButton down">A Little Down</span>
+            </section>
+            <button type="submit" class="submitButton">Submit</button>
+        </main>
+        <section class="datesLogged">
+            <ul class="datesList">
+                <% let currentNum = 0 %>
+                <% results.forEach((doc, index) => {%>
+                    <li>
+                        <span><%= doc.currentDay %>: </span><span><%= doc.moodNumber %></span>
+                        <% if (doc.moodNumber > currentNum) {%>
+                            <span style="color:green;">⇡</span>
+                        <%} else if (doc.moodNumber < currentNum) {%>
+                            <span style="color:red;">⇣</span>
+                        <%} else {%>
+                            <span style="color:orange;">⇢</span>
+                        <%}%>
+                        <% currentNum = doc.moodNumber %>
+                    </li>
+                <%})%>
+            </ul>
         </section>
-        <section class="titleSection">
-            <h1 class="title">Welcome</h1>
-            <h5 class="subTitle">How is your mood today?</h5>
-        </section>
-        <section class="buttonSection">
-            <span href="" class="moodButton good">Feeling Good</span>
-            <span href="" class="moodButton down">A Little Down</span>
-        </section>
-        <button type="submit" class="submitButton">Submit</button>
-    </main>
-    <section class="datesLogged">
-        <% results.forEach(doc => {%>
-            <span><%= doc.currentDay %>: </span><span><%= doc.moodNumber %></span><br>
-        <%})%>
-    </section>
+    </div>
     <script src="/main.js" type="text/javascript"></script>
 </body>
 </html>
