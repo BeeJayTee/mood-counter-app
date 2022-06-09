@@ -2,7 +2,9 @@ const express = require('express')
 const app = express()
 const MongoClient = require('mongodb').MongoClient
 const ObjectId = require('mongodb').ObjectId
-const connectionString = 'mongodb+srv://BeeJayTee:wSlERARh9hx6ynpb@mood-number.oondo.mongodb.net/?retryWrites=true&w=majority'
+require('dotenv').config()
+const dbHash = process.env.DB_HASH
+const connectionString = `mongodb+srv://BeeJayTee:${dbHash}@mood-number.oondo.mongodb.net/?retryWrites=true&w=majority`
 const PORT = 3000
 
 MongoClient.connect(connectionString)
